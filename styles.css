@@ -1,0 +1,133 @@
+:root{--accent:#2b7a78;--muted:#666}
+*{box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+  margin:0;
+  background:#f7f7f8;
+  color:#111
+}
+header{
+  background:linear-gradient(90deg,var(--accent),#3aa1a0);
+  color:white;
+  padding:1rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between
+}
+header h1{
+  margin:0;
+  font-size:1.2rem
+}
+nav{
+  display:flex;
+  gap:.5rem
+}
+nav .tab-btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.2);
+  color:white;
+  padding:.4rem .7rem;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:0.9rem
+}
+nav .tab-btn:hover{
+  background:rgba(255,255,255,0.1)
+}
+main{
+  padding:1rem;
+  max-width:1000px;
+  margin:0 auto
+}
+.card{
+  background:white;
+  padding:1.5rem;
+  border-radius:8px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06)
+}
+.card h2{
+  margin-top:0;
+  margin-bottom:1rem
+}
+.card p{
+  color:#666;
+  line-height:1.6
+}
+.input-container{
+  display:flex;
+  gap:1rem;
+  align-items:center;
+  justify-content:center;
+  margin:1.5rem 0;
+  flex-wrap:wrap
+}
+#userInput{
+  font-size:2rem;
+  width:200px;
+  padding:0.75rem;
+  text-align:center;
+  border:2px solid var(--accent);
+  border-radius:6px;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto
+}
+#userInput:focus{
+  outline:none;
+  border-color:#3aa1a0;
+  box-shadow:0 0 0 3px rgba(43,122,120,0.1)
+}
+#actionBtn{
+  font-size:1rem;
+  padding:0.75rem 1.5rem;
+  cursor:pointer;
+  background:var(--accent);
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-weight:600;
+  transition:background 0.2s
+}
+#actionBtn:hover{
+  background:#3aa1a0
+}
+#displayArea{
+  text-align:center;
+  font-size:2rem;
+  margin:2rem 0;
+  color:var(--muted)
+}
+#remainingVal{
+  font-weight:bold;
+  font-size:2.5rem
+}
+.status-good{
+  color:#27ae60
+}
+.status-warning{
+  color:#e74c3c
+}
+.centered-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1rem
+}
+.finish-message{
+  font-size:1.25rem;
+  margin-top:1rem;
+  padding:1rem;
+  background:#f0f0f0;
+  border-radius:6px;
+  text-align:center
+}
+.finish-message.warning{
+  background:#ffe6e6;
+  color:#c0392b
+}
+.finish-message.success{
+  background:#e6ffe6;
+  color:#27ae60
+}
+button{
+  cursor:pointer
+}
+@media print{header, nav, .actions{display:none}body{background:white}}

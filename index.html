@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roll Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Roll Calculator</h1>
+    <nav>
+      <button class="tab-btn" onclick="document.getElementById('info').scrollIntoView({behavior:'smooth'})">About</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card" id="calculator">
+      <h2 style="text-align:center; margin-top:0;">Run Length Calculator</h2>
+      <p style="text-align:center; color:#666;">Enter your total run length, then subtract individual roll footages to calculate the remaining butt roll.</p>
+      
+      <div class="centered-content">
+        <h3 id="instruction" style="margin:0; font-size:1.5rem; color:var(--accent);">Enter Total Run Length (Feet)</h3>
+        
+        <div class="input-container">
+          <input type="number" id="userInput" placeholder="0" autofocus>
+          <button onclick="handleInput()" id="actionBtn">Next</button>
+        </div>
+        
+        <div id="displayArea">
+          Remaining: <span id="remainingVal">0</span> ft
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="info">
+      <h2>How to Use</h2>
+      <ol style="line-height:1.8; color:#666;">
+        <li><strong>Enter Total Run Length:</strong> Input the total footage of your run.</li>
+        <li><strong>Subtract Roll Footages:</strong> Each time you click "Next", enter the footage of the roll you're using and the system will subtract it.</li>
+        <li><strong>Monitor Remaining Footage:</strong> The display shows your remaining footage. It turns red when below 8000 ft.</li>
+        <li><strong>View Results:</strong> When you go negative, you'll see the final butt roll footage and whether it's suitable to return to storage.</li>
+      </ol>
+      
+      <h3>Color Indicators</h3>
+      <ul style="color:#666;">
+        <li><span style="color:#3aa1a0; font-weight:bold;">Green</span> - Butt roll is 8000 ft or more (good to return)</li>
+        <li><span style="color:#e74c3c; font-weight:bold;">Red</span> - Butt roll is under 8000 ft (too small, consider splitting another roll)</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
