@@ -17,41 +17,7 @@ A professional web app to calculate remaining roll footage and determine if the 
 - `app.js` — Calculator logic
 - `README.md` — This file
 
-## How to Deploy to GitHub Pages
 
-### 1. Create a GitHub Repository
-
-```bash
-# Initialize git in your project
-git init
-
-# Add all files
-git add .
-
-# Commit
-git commit -m "Initial commit: Roll Calculator"
-```
-
-### 2. Push to GitHub
-
-- Create a new repository on [github.com](https://github.com/new)
-- Name it `roll-calculator` (or your preferred name)
-- Follow GitHub's instructions to push your local repo
-
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/roll-calculator.git
-git branch -M main
-git push -u origin main
-```
-
-### 3. Enable GitHub Pages
-
-- Go to your repository settings
-- Scroll to **Pages** section
-- Set source to `main` branch
-- Save
-
-Your site will be live at: `https://YOUR_USERNAME.github.io/roll-calculator/`
 
 ## How to Use
 
