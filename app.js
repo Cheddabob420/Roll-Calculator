@@ -24,10 +24,10 @@ function handleInput() {
   remainingEl.innerText = totalRun;
 
   // Apply red color if below 8000 threshold
-  if (totalRun < 8000 && totalRun >= 0) {
+  if (totalRun < 5000 && totalRun >= 0) {
     remainingEl.classList.remove('status-good');
     remainingEl.classList.add('status-warning');
-  } else if (totalRun >= 8000) {
+  } else if (totalRun >= 5000) {
     remainingEl.classList.remove('status-warning');
     remainingEl.classList.add('status-good');
   }
