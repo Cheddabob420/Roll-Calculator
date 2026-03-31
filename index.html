@@ -18,17 +18,42 @@
     <section class="card" id="calculator">
       <h2 style="text-align:center; margin-top:0;">Run Length Calculator</h2>
       <p style="text-align:center; color:#666;">Enter your total run length, then subtract individual roll footages to calculate the remaining butt roll.</p>
-      
-      <div class="centered-content">
-        <h3 id="instruction" style="margin:0; font-size:1.5rem; color:var(--accent);">Enter Total Run Length (Feet)</h3>
-        
-        <div class="input-container">
-          <input type="number" id="userInput" placeholder="0" autofocus>
-          <button onclick="handleInput()" id="actionBtn">Next</button>
+
+      <div class="calculator-grid">
+        <div class="left-panel">
+          <div class="status-box">
+            <h3>Run Length</h3>
+            <p id="runLengthVal">Not set</p>
+          </div>
+
+          <div class="input-container">
+            <input type="number" id="userInput" placeholder="0" min="0" step="any" autofocus>
+            <button onclick="handleInput()" id="actionBtn">Set/Apply</button>
+            <button onclick="resetCalculator()" id="resetBtn" class="secondary-btn">Reset</button>
+          </div>
+
+          <div class="status-box">
+            <h3>Remaining Footage</h3>
+            <p id="remainingVal">0</p>
+          </div>
+
+          <div class="progress-wrapper">
+            <label for="remainingBar">Remaining Progress</label>
+            <progress id="remainingBar" value="0" max="100"></progress>
+          </div>
+
+          <div id="errorMessage" class="error-message" aria-live="polite"></div>
+
+          <div id="instruction" class="instruction-text">Enter Total Run Length (Feet)</div>
+
+          <div id="finalMessage" class="finish-message" style="display:none;"></div>
         </div>
-        
-        <div id="displayArea">
-          Remaining: <span id="remainingVal">0</span> ft
+
+        <div class="right-panel">
+          <h3>Roll Inventory</h3>
+          <p style="color:#666;">Each entry after initial run length is added here and subtracted from remaining footage.</p>
+          <ul id="rollInventory" class="roll-list"></ul>
+          <button onclick="undoLastRoll()" id="undoBtn" class="secondary-btn" disabled>Undo Last Roll</button>
         </div>
       </div>
     </section>
@@ -44,8 +69,8 @@
       
       <h3>Color Indicators</h3>
       <ul style="color:#666;">
-        <li><span style="color:#3aa1a0; font-weight:bold;">Green</span> - Butt roll is 8000 ft or more (good to return)</li>
-        <li><span style="color:#e74c3c; font-weight:bold;">Red</span> - Butt roll is under 8000 ft (too small, consider splitting another roll)</li>
+        <li><span style="color:#3aa1a0; font-weight:bold;">Green</span> - Butt roll is 5000 ft or more (good to return)</li>
+        <li><span style="color:#e74c3c; font-weight:bold;">Red</span> - Butt roll is under 5000 ft (too small, consider splitting another roll)</li>
       </ul>
     </section>
   </main>

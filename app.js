@@ -1,70 +1,159 @@
-let totalRun = 0;
+let runLength = 0;
+let remaining = 0;
 let isFirstStep = true;
+let rolls = [];
 
-function handleInput() {
-  const inputEl = document.getElementById('userInput');
-  const instructionEl = document.getElementById('instruction');
-  const remainingEl = document.getElementById('remainingVal');
-  
-  let val = parseFloat(inputEl.value);
+const inputEl = document.getElementById('userInput');
+const instructionEl = document.getElementById('instruction');
+const runLengthEl = document.getElementById('runLengthVal');
+const remainingEl = document.getElementById('remainingVal');
+const inventoryEl = document.getElementById('rollInventory');
+const finalMessageEl = document.getElementById('finalMessage');
+const remainingBarEl = document.getElementById('remainingBar');
+const errorMessageEl = document.getElementById('errorMessage');
+const actionBtn = document.getElementById('actionBtn');
+const undoBtn = document.getElementById('undoBtn');
 
-  if (isNaN(val)) return; // Ignore empty/invalid inputs
+function updateDisplay() {
+  runLengthEl.innerText = isFirstStep ? 'Not set' : `${runLength} ft`;
+  const displayRemaining = (!isFirstStep && remaining <= 0) ? Math.abs(remaining) : remaining;
+  remainingEl.innerText = `${displayRemaining} ft`;
 
-  if (isFirstStep) {
-    // Phase 1: Set the initial Run Length
-    totalRun = val;
-    isFirstStep = false;
-    instructionEl.innerText = "Enter Roll Footage";
+  runLengthEl.classList.remove('status-good', 'status-warning');
+  remainingEl.classList.remove('status-good', 'status-warning');
+  remainingBarEl.classList.remove('progress-green', 'progress-amber', 'progress-red');
+
+  if (!isFirstStep) {
+    runLengthEl.classList.add('status-good');
+
+    if (remaining <= 0) {
+      remainingEl.classList.add('status-warning');
+      remainingBarEl.classList.add('progress-red');
+    } else if (remaining < 5000) {
+      remainingEl.classList.add('status-warning');
+      remainingBarEl.classList.add('progress-amber');
+    } else {
+      remainingEl.classList.add('status-good');
+      remainingBarEl.classList.add('progress-green');
+    }
+  }
+
+  if (runLength > 0) {
+    let percent = Math.round((remaining / runLength) * 100);
+    percent = Math.max(0, Math.min(100, percent));
+    remainingBarEl.value = percent;
   } else {
-    // Phase 2: Subtract Rolls
-    totalRun -= val;
+    remainingBarEl.value = 0;
   }
 
-  // Update Display
-  remainingEl.innerText = totalRun;
-
-  // Apply red color if below 8000 threshold
-  if (totalRun < 5000 && totalRun >= 0) {
-    remainingEl.classList.remove('status-good');
-    remainingEl.classList.add('status-warning');
-  } else if (totalRun >= 5000) {
-    remainingEl.classList.remove('status-warning');
-    remainingEl.classList.add('status-good');
+  const atOrUnderZero = (remaining <= 0 && !isFirstStep);
+  if (atOrUnderZero) {
+    const buttRoll = Math.abs(remaining);
+    const smallRoll = buttRoll < 5000;
+    finalMessageEl.style.display = 'block';
+    finalMessageEl.className = `finish-message ${smallRoll ? 'warning' : 'success'}`;
+    finalMessageEl.textContent = smallRoll
+      ? `⚠️ Final butt roll: ${buttRoll} ft. Consider splitting another roll for storage.`
+      : `✓ Final butt roll: ${buttRoll} ft. Good to return to the roll room.`;
+    instructionEl.textContent = 'Run complete. Press Restart to begin a new session.';
+    inputEl.disabled = true;
+    actionBtn.disabled = true;
   }
 
-  // Check if negative
-  if (totalRun < 0) {
-    // Convert negative to positive for final result
-    let finalOverage = Math.abs(totalRun);
-    let isWarning = finalOverage < 8000;
-    let textColor = isWarning ? '#e74c3c' : '#27ae60';
-    let messageClass = isWarning ? 'warning' : 'success';
-    let messageText = isWarning 
-      ? '⚠️ This will create a small butt roll. Consider getting another roll to split the last two!'
-      : '✓ Butt roll will be good to go back to the roll room!';
-    
-    // Final Output
-    document.getElementById('app').innerHTML = `
-      <div class="card">
-        <h1 style="text-align:center; color:var(--accent); margin-top:0;">Finished!</h1>
-        <div class="centered-content">
-          <p style="font-size:1.25rem; margin:0.5rem 0;">Remaining Roll Footage:</p>
-          <p style="font-size:3rem; font-weight:bold; color:${textColor}; margin:0;">${finalOverage} ft</p>
-          <div class="finish-message ${messageClass}">
-            ${messageText}
-          </div>
-          <button onclick="location.reload()" style="font-size:1rem; margin-top:1rem;">Restart</button>
-        </div>
-      </div>
-    `;
+  undoBtn.disabled = rolls.length === 0;
+}
+
+function updateInventory() {
+  inventoryEl.innerHTML = '';
+  rolls.forEach((roll, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>Roll ${index + 1}</span><span>${roll} ft</span>`;
+    inventoryEl.appendChild(li);
+  });
+}
+
+function setError(message) {
+  errorMessageEl.textContent = message || '';
+}
+
+function undoLastRoll() {
+  if (rolls.length === 0) {
+    setError('No roll to undo.');
+    return;
   }
 
-  // Reset input field for next roll
-  inputEl.value = "";
+  const lastRoll = rolls.pop();
+  remaining += lastRoll;
+  setError('');
+  updateInventory();
+  resetFinalMessage();
+  inputEl.disabled = false;
+  actionBtn.disabled = false;
+  actionBtn.innerText = 'Add Roll';
+  instructionEl.textContent = 'Enter each roll footage to subtract from total.';
+  updateDisplay();
   inputEl.focus();
 }
 
-// Allow "Enter" key to trigger the button
-document.getElementById("userInput").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") handleInput();
+function resetFinalMessage() {
+  finalMessageEl.style.display = 'none';
+  finalMessageEl.className = 'finish-message';
+  finalMessageEl.textContent = '';
+  setError('');
+}
+
+function resetCalculator() {
+  runLength = 0;
+  remaining = 0;
+  isFirstStep = true;
+  rolls = [];
+
+  inputEl.disabled = false;
+  actionBtn.disabled = false;
+  undoBtn.disabled = true;
+  actionBtn.innerText = 'Set/Apply';
+  instructionEl.textContent = 'Enter Total Run Length (Feet)';
+  runLengthEl.innerText = 'Not set';
+  remainingEl.innerText = '0 ft';
+
+  updateInventory();
+  resetFinalMessage();
+  updateDisplay();
+  inputEl.value = '';
+  inputEl.focus();
+}
+
+function handleInput() {
+  let val = parseFloat(inputEl.value);
+  if (isNaN(val) || val <= 0) {
+    setError('Please enter a positive number.');
+    return;
+  }
+
+  if (isFirstStep) {
+    runLength = val;
+    remaining = val;
+    isFirstStep = false;
+    instructionEl.innerText = 'Enter each roll footage to subtract from total.';
+    actionBtn.innerText = 'Add Roll';
+    resetFinalMessage();
+  } else {
+    rolls.push(val);
+    remaining -= val;
+    updateInventory();
+    setError('');
+  }
+
+  updateDisplay();
+
+  inputEl.value = '';
+  if (!inputEl.disabled) inputEl.focus();
+}
+
+inputEl.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') handleInput();
 });
+
+// Initial states
+updateDisplay();
+updateInventory();
