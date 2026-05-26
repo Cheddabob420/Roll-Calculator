@@ -29,7 +29,7 @@ function updateDisplay() {
     if (remaining <= 0) {
       remainingEl.classList.add('status-warning');
       remainingBarEl.classList.add('progress-red');
-    } else if (remaining < 5000) {
+    } else if (remaining < 8000) {
       remainingEl.classList.add('status-warning');
       remainingBarEl.classList.add('progress-amber');
     } else {
@@ -49,7 +49,7 @@ function updateDisplay() {
   const atOrUnderZero = (remaining <= 0 && !isFirstStep);
   if (atOrUnderZero) {
     const buttRoll = Math.abs(remaining);
-    const smallRoll = buttRoll < 5000;
+    const smallRoll = buttRoll < 8000;
     finalMessageEl.style.display = 'block';
     finalMessageEl.className = `finish-message ${smallRoll ? 'warning' : 'success'}`;
     finalMessageEl.textContent = smallRoll
