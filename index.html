@@ -155,15 +155,15 @@
     // Takeup calculator
     function calculateTakeup() {
       var flat = parseFloat(document.getElementById('flatLineal').value) || 0;
-      var factorA = parseFloat(document.getElementById('factorA').value) || 0;
+      var factorE = parseFloat(document.getElementById('factorE').value) || 0;
       var factorB = parseFloat(document.getElementById('factorB').value) || 0;
       var factorC = parseFloat(document.getElementById('factorC').value) || 0;
 
-      var outA = (flat * factorA);
+      var outE = (flat * factorE);
       var outB = (flat * factorB);
       var outC = (flat * factorC);
 
-      document.getElementById('outputA').innerText = isFinite(outA) ? outA.toFixed(2) : '0';
+      document.getElementById('outputE').innerText = isFinite(outE) ? outA.toFixed(2) : '0';
       document.getElementById('outputB').innerText = isFinite(outB) ? outB.toFixed(2) : '0';
       document.getElementById('outputC').innerText = isFinite(outC) ? outC.toFixed(2) : '0';
     }
