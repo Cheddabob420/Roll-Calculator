@@ -180,17 +180,17 @@ function switchTab(tabId) {
 function calculateTakeup() {
   const flatLineal = parseFloat(document.getElementById('flatLineal').value) || 0;
 
-  const factorA = parseFloat(document.getElementById('factorA').value) || 0;
+  const factorE = parseFloat(document.getElementById('factorE').value) || 0;
   const factorC = parseFloat(document.getElementById('factorC').value) || 0;
   const factorB = parseFloat(document.getElementById('factorB').value) || 0;
 
   // Multiply flat lineal by each takeup factor
-  const resultA = Math.round(flatLineal * factorA);
+  const resultA = Math.round(flatLineal * factorE);
   const resultC = Math.round(flatLineal * factorC);
   const resultB = Math.round(flatLineal * factorB);
 
   // Update output displays formatted with commas
-  document.getElementById('outputA').innerText = resultA.toLocaleString();
+  document.getElementById('outputE').innerText = resultE.toLocaleString();
   document.getElementById('outputC').innerText = resultC.toLocaleString();
   document.getElementById('outputB').innerText = resultB.toLocaleString();
 }
