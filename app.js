@@ -15,6 +15,8 @@ const actionBtn = document.getElementById('actionBtn');
 const undoBtn = document.getElementById('undoBtn');
 
 function updateDisplay() {
+  if (!runLengthEl || !remainingEl || !remainingBarEl) return;
+
   runLengthEl.innerText = isFirstStep ? 'Not set' : `${runLength} ft`;
   const displayRemaining = (!isFirstStep && remaining <= 0) ? Math.abs(remaining) : remaining;
   remainingEl.innerText = `${displayRemaining} ft`;
@@ -47,7 +49,7 @@ function updateDisplay() {
   }
 
   const atOrUnderZero = (remaining <= 0 && !isFirstStep);
-  if (atOrUnderZero) {
+  if (atOrUnderZero && finalMessageEl && instructionEl && inputEl && actionBtn) {
     const buttRoll = Math.abs(remaining);
     const smallRoll = buttRoll < 8000;
     finalMessageEl.style.display = 'block';
@@ -60,10 +62,11 @@ function updateDisplay() {
     actionBtn.disabled = true;
   }
 
-  undoBtn.disabled = rolls.length === 0;
+  if (undoBtn) undoBtn.disabled = rolls.length === 0;
 }
 
 function updateInventory() {
+  if (!inventoryEl) return;
   inventoryEl.innerHTML = '';
   rolls.forEach((roll, index) => {
     const li = document.createElement('li');
@@ -73,7 +76,7 @@ function updateInventory() {
 }
 
 function setError(message) {
-  errorMessageEl.textContent = message || '';
+  if (errorMessageEl) errorMessageEl.textContent = message || '';
 }
 
 function undoLastRoll() {
@@ -87,15 +90,18 @@ function undoLastRoll() {
   setError('');
   updateInventory();
   resetFinalMessage();
-  inputEl.disabled = false;
-  actionBtn.disabled = false;
-  actionBtn.innerText = 'Add Roll';
-  instructionEl.textContent = 'Enter each roll footage to subtract from total.';
+  if (inputEl) inputEl.disabled = false;
+  if (actionBtn) {
+    actionBtn.disabled = false;
+    actionBtn.innerText = 'Add Roll';
+  }
+  if (instructionEl) instructionEl.textContent = 'Enter each roll footage to subtract from total.';
   updateDisplay();
-  inputEl.focus();
+  if (inputEl) inputEl.focus();
 }
 
 function resetFinalMessage() {
+  if (!finalMessageEl) return;
   finalMessageEl.style.display = 'none';
   finalMessageEl.className = 'finish-message';
   finalMessageEl.textContent = '';
@@ -108,22 +114,27 @@ function resetCalculator() {
   isFirstStep = true;
   rolls = [];
 
-  inputEl.disabled = false;
-  actionBtn.disabled = false;
-  undoBtn.disabled = true;
-  actionBtn.innerText = 'Set/Apply';
-  instructionEl.textContent = 'Enter Total Run Length (Feet)';
-  runLengthEl.innerText = 'Not set';
-  remainingEl.innerText = '0 ft';
+  if (inputEl) inputEl.disabled = false;
+  if (actionBtn) {
+    actionBtn.disabled = false;
+    actionBtn.innerText = 'Set/Apply';
+  }
+  if (undoBtn) undoBtn.disabled = true;
+  if (instructionEl) instructionEl.textContent = 'Enter Total Run Length (Feet)';
+  if (runLengthEl) runLengthEl.innerText = 'Not set';
+  if (remainingEl) remainingEl.innerText = '0 ft';
 
   updateInventory();
   resetFinalMessage();
   updateDisplay();
-  inputEl.value = '';
-  inputEl.focus();
+  if (inputEl) {
+    inputEl.value = '';
+    inputEl.focus();
+  }
 }
 
 function handleInput() {
+  if (!inputEl) return;
   let val = parseFloat(inputEl.value);
   if (isNaN(val) || val <= 0) {
     setError('Please enter a positive number.');
@@ -134,8 +145,8 @@ function handleInput() {
     runLength = val;
     remaining = val;
     isFirstStep = false;
-    instructionEl.innerText = 'Enter each roll footage to subtract from total.';
-    actionBtn.innerText = 'Add Roll';
+    if (instructionEl) instructionEl.innerText = 'Enter each roll footage to subtract from total.';
+    if (actionBtn) actionBtn.innerText = 'Add Roll';
     resetFinalMessage();
   } else {
     rolls.push(val);
@@ -150,47 +161,67 @@ function handleInput() {
   if (!inputEl.disabled) inputEl.focus();
 }
 
-inputEl.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') handleInput();
-});
+if (inputEl) {
+  inputEl.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleInput();
+  });
+}
 
-// Initial states
+// Initial states for Run Length Calculator
 updateDisplay();
 updateInventory();
 
 
-// Function to switch between tabs
-function switchTab(tabId) {
-  // Hide all tabs
+/* ==========================================================================
+   TAB SWITCHING & TAKEUP CALCULATOR LOGIC
+   ========================================================================== */
+
+function switchTab(tabId, evt) {
+  // Hide all tab panels
   document.querySelectorAll('.tab-content').forEach(tab => {
     tab.classList.remove('active');
   });
 
-  // Deactivate all tab buttons
+  // Remove active styling from tab buttons
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.remove('active');
   });
 
-  // Activate selected tab and button
-  document.getElementById(tabId).classList.add('active');
-  event.currentTarget.classList.add('active');
+  // Activate selected tab panel
+  const targetTab = document.getElementById(tabId);
+  if (targetTab) {
+    targetTab.classList.add('active');
+  }
+
+  // Activate chosen button dynamically
+  const targetBtn = evt ? evt.currentTarget : window.event?.currentTarget;
+  if (targetBtn) {
+    targetBtn.classList.add('active');
+  }
 }
 
-// Function to calculate takeup lineal footages
 function calculateTakeup() {
-  const flatLineal = parseFloat(document.getElementById('flatLineal').value) || 0;
+  const flatInput = document.getElementById('flatLineal');
+  if (!flatInput) return;
 
-  const factorE = parseFloat(document.getElementById('factorE').value) || 0;
-  const factorC = parseFloat(document.getElementById('factorC').value) || 0;
-  const factorB = parseFloat(document.getElementById('factorB').value) || 0;
+  const flatLineal = parseFloat(flatInput.value) || 0;
 
-  // Multiply flat lineal by each takeup factor
-  const resultA = Math.round(flatLineal * factorE);
+  // Get factor values with safe fallbacks
+  const factorE = parseFloat(document.getElementById('factorE')?.value) || 0;
+  const factorC = parseFloat(document.getElementById('factorC')?.value) || 0;
+  const factorB = parseFloat(document.getElementById('factorB')?.value) || 0;
+
+  // Calculate results for E, C, and B flutes
+  const resultE = Math.round(flatLineal * factorE);
   const resultC = Math.round(flatLineal * factorC);
   const resultB = Math.round(flatLineal * factorB);
 
-  // Update output displays formatted with commas
-  document.getElementById('outputE').innerText = resultE.toLocaleString();
-  document.getElementById('outputC').innerText = resultC.toLocaleString();
-  document.getElementById('outputB').innerText = resultB.toLocaleString();
+  // Render values to UI formatted with commas
+  const outE = document.getElementById('outputE');
+  const outC = document.getElementById('outputC');
+  const outB = document.getElementById('outputB');
+
+  if (outE) outE.innerText = resultE.toLocaleString();
+  if (outC) outC.innerText = resultC.toLocaleString();
+  if (outB) outB.innerText = resultB.toLocaleString();
 }
