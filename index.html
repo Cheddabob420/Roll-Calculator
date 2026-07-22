@@ -9,55 +9,116 @@
 <body>
   <header>
     <h1>Roll Calculator</h1>
-    <nav>
-      <button class="tab-btn" onclick="document.getElementById('info').scrollIntoView({behavior:'smooth'})">About</button>
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('run-length-tab')">Run Length</button>
+      <button class="tab-btn" onclick="switchTab('takeup-tab')">Takeup Calculator</button>
     </nav>
   </header>
 
   <main>
-    <section class="card" id="calculator">
-      <h2 style="text-align:center; margin-top:0;">Run Length Calculator</h2>
-      <p style="text-align:center; color:#666;">Enter your total run length, then subtract individual roll footages to calculate the remaining butt roll.</p>
+    <!-- TAB 1: RUN LENGTH CALCULATOR -->
+    <section id="run-length-tab" class="tab-content active">
+      <section class="card" id="calculator">
+        <h2 style="text-align:center; margin-top:0;">Run Length Calculator</h2>
+        <p style="text-align:center; color:#666;">Enter your total run length, then subtract individual roll footages to calculate the remaining butt roll.</p>
 
-      <div class="calculator-grid">
-        <div class="left-panel">
-          <div class="status-box">
-            <h3>Run Length</h3>
-            <p id="runLengthVal">Not set</p>
+        <div class="calculator-grid">
+          <div class="left-panel">
+            <div class="status-box">
+              <h3>Run Length</h3>
+              <p id="runLengthVal">Not set</p>
+            </div>
+
+            <div class="input-container">
+              <input type="number" id="userInput" placeholder="0" min="0" step="any" autofocus>
+              <button onclick="handleInput()" id="actionBtn">Set/Apply</button>
+              <button onclick="resetCalculator()" id="resetBtn" class="secondary-btn">Reset</button>
+            </div>
+
+            <div class="status-box">
+              <h3>Remaining Footage</h3>
+              <p id="remainingVal">0</p>
+            </div>
+
+            <div class="progress-wrapper">
+              <label for="remainingBar">Remaining Progress</label>
+              <progress id="remainingBar" value="0" max="100"></progress>
+            </div>
+
+            <div id="errorMessage" class="error-message" aria-live="polite"></div>
+
+            <div id="instruction" class="instruction-text">Enter Total Run Length (Feet)</div>
+
+            <div id="finalMessage" class="finish-message" style="display:none;"></div>
           </div>
 
-          <div class="input-container">
-            <input type="number" id="userInput" placeholder="0" min="0" step="any" autofocus>
-            <button onclick="handleInput()" id="actionBtn">Set/Apply</button>
-            <button onclick="resetCalculator()" id="resetBtn" class="secondary-btn">Reset</button>
+          <div class="right-panel">
+            <h3>Roll Inventory</h3>
+            <p style="color:#666;">Each entry after initial run length is added here and subtracted from remaining footage.</p>
+            <ul id="rollInventory" class="roll-list"></ul>
+            <button onclick="undoLastRoll()" id="undoBtn" class="secondary-btn" disabled>Undo Last Roll</button>
           </div>
+        </div>
+      </section>
+    </section>
 
-          <div class="status-box">
-            <h3>Remaining Footage</h3>
-            <p id="remainingVal">0</p>
-          </div>
+    <!-- TAB 2: TAKEUP CALCULATOR -->
+    <section id="takeup-tab" class="tab-content">
+      <h2>Takeup Calculator</h2>
+      <p>Enter flat lineal footage to calculate required medium footage for different flute sizes.</p>
 
-          <div class="progress-wrapper">
-            <label for="remainingBar">Remaining Progress</label>
-            <progress id="remainingBar" value="0" max="100"></progress>
-          </div>
-
-          <div id="errorMessage" class="error-message" aria-live="polite"></div>
-
-          <div id="instruction" class="instruction-text">Enter Total Run Length (Feet)</div>
-
-          <div id="finalMessage" class="finish-message" style="display:none;"></div>
+      <div class="takeup-card">
+        <div class="input-group">
+          <label for="flatLineal">Enter Flat / Liner Lineal Footage (Feet):</label>
+          <input 
+            type="number" 
+            id="flatLineal" 
+            placeholder="e.g. 10000" 
+            oninput="calculateTakeup()" 
+          />
         </div>
 
-        <div class="right-panel">
-          <h3>Roll Inventory</h3>
-          <p style="color:#666;">Each entry after initial run length is added here and subtracted from remaining footage.</p>
-          <ul id="rollInventory" class="roll-list"></ul>
-          <button onclick="undoLastRoll()" id="undoBtn" class="secondary-btn" disabled>Undo Last Roll</button>
+        <div class="flute-outputs">
+          <!-- A-Flute -->
+          <div class="flute-card">
+            <h3>A-Flute</h3>
+            <div class="factor-input">
+              <label>Factor:</label>
+              <input type="number" id="factorA" value="1.54" step="0.01" oninput="calculateTakeup()">
+            </div>
+            <div class="result-display">
+              <span id="outputA">0</span> <small>ft</small>
+            </div>
+          </div>
+
+          <!-- C-Flute -->
+          <div class="flute-card">
+            <h3>C-Flute</h3>
+            <div class="factor-input">
+              <label>Factor:</label>
+              <input type="number" id="factorC" value="1.43" step="0.01" oninput="calculateTakeup()">
+            </div>
+            <div class="result-display">
+              <span id="outputC">0</span> <small>ft</small>
+            </div>
+          </div>
+
+          <!-- B-Flute -->
+          <div class="flute-card">
+            <h3>B-Flute</h3>
+            <div class="factor-input">
+              <label>Factor:</label>
+              <input type="number" id="factorB" value="1.32" step="0.01" oninput="calculateTakeup()">
+            </div>
+            <div class="result-display">
+              <span id="outputB">0</span> <small>ft</small>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Info / How to Use (kept from original) -->
     <section class="card" id="info">
       <h2>How to Use</h2>
       <ol style="line-height:1.8; color:#666;">
@@ -74,6 +135,44 @@
       </ul>
     </section>
   </main>
+
+  <script>
+    // Simple tab switcher
+    function switchTab(id) {
+      document.querySelectorAll('.tab-content').forEach(function(sec){
+        sec.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+
+      // update active button
+      document.querySelectorAll('.tab-btn').forEach(function(btn){
+        btn.classList.remove('active');
+      });
+      var activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(id));
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    // Takeup calculator
+    function calculateTakeup() {
+      var flat = parseFloat(document.getElementById('flatLineal').value) || 0;
+      var factorA = parseFloat(document.getElementById('factorA').value) || 0;
+      var factorB = parseFloat(document.getElementById('factorB').value) || 0;
+      var factorC = parseFloat(document.getElementById('factorC').value) || 0;
+
+      var outA = (flat * factorA);
+      var outB = (flat * factorB);
+      var outC = (flat * factorC);
+
+      document.getElementById('outputA').innerText = isFinite(outA) ? outA.toFixed(2) : '0';
+      document.getElementById('outputB').innerText = isFinite(outB) ? outB.toFixed(2) : '0';
+      document.getElementById('outputC').innerText = isFinite(outC) ? outC.toFixed(2) : '0';
+    }
+
+    // initialize outputs on load
+    document.addEventListener('DOMContentLoaded', function(){
+      calculateTakeup();
+    });
+  </script>
 
   <script src="app.js"></script>
 </body>
