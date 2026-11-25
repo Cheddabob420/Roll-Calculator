@@ -12,6 +12,7 @@
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('run-length-tab', event)">Run Length</button>
       <button class="tab-btn" onclick="switchTab('takeup-tab', event)">Takeup Calculator</button>
+      <button class="tab-btn" onclick="switchTab('scrap-tab', event)">Sheet Scrap & Tolerance</button>
     </nav>
   </header>
 
@@ -67,7 +68,7 @@
           <li><strong>Monitor Remaining Footage:</strong> The display shows your remaining footage. It turns red when below 5000 ft so you know you will have enough time to get the next up.</li>
           <li><strong>View Results:</strong> When you go negative, you'll see the final butt roll footage and whether it's suitable to return to storage.</li>
         </ol>
-        
+
         <h3>Color Indicators</h3>
         <ul>
           <li><span style="color: green; font-weight: bold;">Green</span> - Butt roll is 8000 ft or more (good to return)</li>
@@ -141,6 +142,112 @@
           <li><strong>Enter Flat Lineal:</strong> Input your target liner / flat lineal footage.</li>
           <li><strong>Adjust Factors:</strong> Takeup factors default to standard E (1.23), C (1.34), and B (1.28) flute ratios. Adjust them if your paper or mill target is different.</li>
           <li><strong>Read Outputs:</strong> Required medium footages update live as you type.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- TAB 3: SHEET SCRAP & TOLERANCE CALCULATOR -->
+    <section id="scrap-tab" class="tab-content">
+      <h2>Sheet Scrap & 10% Tolerance Calculator</h2>
+      <p>Enter the total order sheets, sheets per unit, and scrapped sheets to check if the run is within the 10% tolerance or requires makeup sheets.</p>
+
+      <div class="takeup-card">
+        <form id="scrapForm" onsubmit="event.preventDefault(); calculateScrapTolerance();">
+          <div class="scrap-inputs-grid">
+            <div class="input-group">
+              <label for="totalOrderSheets">Total Order Sheets:</label>
+              <input 
+                type="number" 
+                id="totalOrderSheets" 
+                min="1" 
+                placeholder="e.g. 10000" 
+                oninput="calculateScrapTolerance()"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="sheetsPerUnit">Sheets Per Unit:</label>
+              <input 
+                type="number" 
+                id="sheetsPerUnit" 
+                min="1" 
+                placeholder="e.g. 250" 
+                oninput="calculateScrapTolerance()"
+              />
+              <div class="unit-presets">
+                <button type="button" class="preset-btn" onclick="setUnitPreset(50)">50</button>
+                <button type="button" class="preset-btn" onclick="setUnitPreset(100)">100</button>
+                <button type="button" class="preset-btn" onclick="setUnitPreset(250)">250</button>
+                <button type="button" class="preset-btn" onclick="setUnitPreset(500)">500</button>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="scrappedSheets">Scrapped Sheets:</label>
+              <input 
+                type="number" 
+                id="scrappedSheets" 
+                min="0" 
+                placeholder="e.g. 850" 
+                oninput="calculateScrapTolerance()"
+              />
+            </div>
+          </div>
+
+          <div class="flute-outputs">
+            <div class="flute-card">
+              <h3>Total Order Units</h3>
+              <div class="result-display teal-text">
+                <span id="resTotalUnits">0</span> <small>units</small>
+              </div>
+              <div class="sub-stat" id="resUnitBreakdown">0 full units + 0 loose</div>
+            </div>
+
+            <div class="flute-card">
+              <h3>Stored 10% Scrap Cap</h3>
+              <div class="result-display teal-text">
+                <span id="resTenPercent">0</span> <small>sheets</small>
+              </div>
+              <div class="sub-stat" id="resTenPercentUnits">0 units (Min Good: 0 sheets)</div>
+            </div>
+
+            <div class="flute-card">
+              <h3>Scrap Percentage</h3>
+              <div class="result-display teal-text" id="resScrapPctWrap">
+                <span id="resScrapPct">0.00%</span>
+              </div>
+              <div class="sub-stat" id="resGoodRemaining">Good sheets remaining: 0</div>
+            </div>
+          </div>
+
+          <div id="scrapStatusBanner" class="finish-message" style="margin-top: 1.25rem;">
+            Enter total order sheets above to calculate 10% tolerance.
+          </div>
+
+          <div id="makeupBox" class="makeup-panel" style="display: none;">
+            <div class="makeup-item">
+              <span class="makeup-label">Makeup Needed to Reach 90% Minimum:</span>
+              <strong id="resMakeup90">0 sheets (0 units)</strong>
+            </div>
+            <div class="makeup-item">
+              <span class="makeup-label">Makeup Needed for 100% Full Order:</span>
+              <strong id="resMakeup100">0 sheets (0 units)</strong>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; text-align: right;">
+            <button type="button" class="secondary-btn" onclick="resetScrapCalculator()">Clear Scrap Form</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Instructions ONLY for Scrap & Tolerance -->
+      <div class="instructions">
+        <h3>How to Use Sheet Scrap & Tolerance Calculator</h3>
+        <ol>
+          <li><strong>Enter Total Order Sheets & Sheets Per Unit:</strong> The calculator locks in your 10% scrap allowance (and 90% minimum shippable sheets) and converts the order into unit counts.</li>
+          <li><strong>Enter Scrapped Sheets:</strong> Input the total damaged/scrapped sheets from the run to see what percentage of the order was lost.</li>
+          <li><strong>Check Tolerance & Makeup:</strong> If scrap stays at or below 10%, the banner stays green and shows your remaining scrap buffer. If it exceeds 10%, the banner turns red and shows the exact sheets and units needed to make up the shortage.</li>
         </ol>
       </div>
     </section>
