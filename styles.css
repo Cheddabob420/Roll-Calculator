@@ -12,7 +12,9 @@ header{
   padding:1rem;
   display:flex;
   align-items:center;
-  justify-content:space-between
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:0.75rem;
 }
 header h1{
   margin:0;
@@ -20,19 +22,27 @@ header h1{
 }
 nav{
   display:flex;
-  gap:.5rem
+  gap:.5rem;
+  flex-wrap:wrap;
 }
 nav .tab-btn{
   background:transparent;
-  border:1px solid rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.25);
   color:white;
-  padding:.4rem .7rem;
+  padding:.45rem .85rem;
   border-radius:6px;
   cursor:pointer;
-  font-size:0.9rem
+  font-size:0.9rem;
+  font-weight:600;
+  transition:background 0.2s ease;
 }
 nav .tab-btn:hover{
-  background:rgba(255,255,255,0.1)
+  background:rgba(255,255,255,0.15)
+}
+nav .tab-btn.active{
+  background:#ffffff;
+  color:var(--accent);
+  border-color:#ffffff;
 }
 main{
   padding:1rem;
@@ -197,7 +207,8 @@ main{
   gap:1rem
 }
 .finish-message{
-  font-size:1.25rem;
+  font-size:1.15rem;
+  font-weight:600;
   margin-top:1rem;
   padding:1rem;
   background:#f0f0f0;
@@ -206,44 +217,18 @@ main{
 }
 .finish-message.warning{
   background:#ffe6e6;
-  color:#c0392b
+  color:#c0392b;
+  border:1px solid #f5b7b1;
 }
 .finish-message.success{
   background:#e6ffe6;
-  color:#27ae60
+  color:#27ae60;
+  border:1px solid #a9dfbf;
 }
 button{
   cursor:pointer
 }
 @media print{header, nav, .actions{display:none}body{background:white}}
-
-/* Added tab + takeup styles */
-/* Tab Navigation */
-.tab-nav {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.tab-btn {
-  padding: 10px 20px;
-  border: none;
-  background-color: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 6px 6px 0 0;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-}
-
-.tab-btn.active {
-  background-color: #3498db;
-}
-
-.tab-btn:hover {
-  opacity: 0.9;
-}
 
 /* Tab Switching Visibility */
 .tab-content {
@@ -254,7 +239,7 @@ button{
   display: block;
 }
 
-/* Takeup Calculator Layout */
+/* Takeup & Scrap Calculator Layout */
 .takeup-card {
   background: #ffffff;
   padding: 20px;
@@ -263,8 +248,15 @@ button{
   margin-top: 15px;
 }
 
+.scrap-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .input-group label {
@@ -280,6 +272,34 @@ button{
   font-size: 1.1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(43, 122, 120, 0.12);
+}
+
+.unit-presets {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.preset-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.preset-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 .flute-outputs {
@@ -298,6 +318,7 @@ button{
 
 .flute-card h3 {
   margin-top: 0;
+  margin-bottom: 8px;
   color: #1e293b;
 }
 
@@ -322,4 +343,43 @@ button{
   font-size: 1.8rem;
   font-weight: bold;
   color: #2563eb;
+}
+
+.result-display.teal-text {
+  color: var(--accent);
+}
+
+.result-display.over-limit {
+  color: #c0392b;
+}
+
+.sub-stat {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.makeup-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 6px;
+  background: #fff5f5;
+  border: 1px solid #f5b7b1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.makeup-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.makeup-item strong {
+  color: #c0392b;
+  font-size: 1.05rem;
 }
